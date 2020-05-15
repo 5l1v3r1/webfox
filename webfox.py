@@ -39,11 +39,11 @@ ENDC = '\033[0m'
 BOLD = '\033[1m'
 WARNING = '\033[93m'
 
-urlfile = open("C:\\Users\\test\\Desktop\\webscanner\\common_urllist.txt")
+urlfile = open("YOUR_FILE_PATH\common_urllist.txt")
 u = urlfile.read()
 hiddenurls = u.splitlines()
 
-subfile = open("C:\\Users\\test\\Desktop\\webscanner\\subdomains.txt")
+subfile = open("YOUR_FILE_PATH\subdomains.txt")
 su = subfile.read()
 subdomains = su.splitlines()
 
