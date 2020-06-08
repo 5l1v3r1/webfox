@@ -3,7 +3,9 @@
 import socket, threading
 import optparse
 import requests
+import os
 import time
+from time import gmtime, strftime
 
 a = """
 
@@ -34,13 +36,17 @@ def user_input():
 host_info = user_input()
 target = host_info.target_address
 
-# ColorsPalet
+#ColorsPalet
+HEADER = '\033[95m'
+OKBLUE = '\033[94m'
 OKGREEN = '\033[92m'
+WARNING = '\033[93m'
+FAIL = '\033[91m'
 ENDC = '\033[0m'
 BOLD = '\033[1m'
-WARNING = '\033[93m'
+UNDERLINE = '\033[4m'
 
-urlfile = open("YOUR_FILE_PATH\common_urllist.txt") #CHANGE_THIS
+urlfile = open("common_urllist.txt")
 u = urlfile.read()
 hiddenurls = u.splitlines()
 
@@ -60,7 +66,7 @@ def find_hiddenurls(target):
                 print(OKGREEN + "\n[+] Discovered url:", h_url + ENDC)
 
 
-subfile = open("YOUR_FILE_PATH\subdomains.txt") #CHANGE_THIS
+subfile = open("subdomains.txt")
 su = subfile.read()
 subdomains = su.splitlines()
 
@@ -107,6 +113,20 @@ def scan_ports(target, delay):
         if output[i] == 'is open':
             print(OKGREEN + "[+] Port "+ str(i) + " is open" + ENDC)
 
+def scan_common_vulns(target):
+    try:
+        print(WARNING+"\n[!] Scanning known common vulnerabilities for: " + str(target)+"\n"+ENDC)
+        print(WARNING+"Warning! It can take a moment.\n"+ENDC)
+        time.sleep(1)
+        command = ("nmap -Pn --script vuln " + target)
+        process = os.popen(command)
+        results = str(process.read())
+        logs = "logs/nmap_vulns" + strftime("%Y-%m-%d_%H:%M:%S", gmtime())
+        print(OKGREEN + results + logs + ENDC)
+    except KeyboardInterrupt:
+        print(FAIL + "\n[!] Stopped by user interruption" + ENDC)
+        time.sleep(1)
+
 
 
 def main():
@@ -117,5 +137,6 @@ def main():
 if __name__ == "__main__":
     main()
 
+scan_common_vulns(target)
 find_hiddenurls(target)
 find_subdomains(target)
